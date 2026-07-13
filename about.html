@@ -5,346 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Me | 박현도</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-    
-    <style>
-        :root {
-            --deep-navy: #0A1128;
-            --navy-light: #162447;
-            --text-main: #F8F9FA;
-            --text-muted: #ADB5BD;
-            --accent-red: #E63946; /* 열정을 상징하는 크림슨 레드 포인트 */
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Pretendard', sans-serif;
-        }
-
-        body {
-            background-color: var(--deep-navy);
-            color: var(--text-main);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* 자기소개 섹션 스타일 */
-        .about-section {
-            padding-top: 150px; /* 네비게이션 바 높이(80px) 고려 */
-            padding-bottom: 100px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-
-        .profile-card {
-            background-color: var(--navy-light);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 50px 40px;
-            width: 100%;
-            max-width: 600px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .profile-card h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: var(--text-main);
-        }
-
-        .profile-card > p {
-            color: var(--text-muted);
-            margin-bottom: 40px;
-            font-size: 1.1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 20px;
-        }
-
-        .info-list {
-            list-style: none;
-        }
-
-        .info-list li {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
-
-        .info-list .label {
-            width: 120px;
-            font-weight: 700;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-        }
-
-        .info-list .value {
-            font-weight: 500;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-        }
-
-        /* MBTI 강조 뱃지 */
-        .mbti-badge {
-            background-color: var(--accent-red);
-            color: #fff;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 800;
-            margin-left: 10px;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 10px rgba(230, 57, 70, 0.3);
-        }
-
-        /* 페이드인 애니메이션 */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deepNavy: '#0A1128', navyLight: '#162447', textMain: '#F8F9FA', textMuted: '#ADB5BD',
+                        accentRed: '#E63946'
+                    },
+                    fontFamily: { sans: ['Pretendard', 'sans-serif'] }
+                }
             }
         }
-
-        /* 모바일 반응형 */
-        @media (max-width: 768px) {
-            .profile-card {
-                padding: 40px 25px;
-            }
-            .info-list li {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .info-list .label {
-                margin-bottom: 5px;
-                font-size: 1rem;
-            }
-            .info-list .value {
-                font-size: 1.1rem;
-            }
-            .mbti-badge {
-                margin-left: 0;
-                margin-top: 5px;
-            }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .fade-in-up { @apply opacity-0 translate-y-[30px] transition-all duration-[800ms] ease-out; }
+            .fade-in-up.visible { @apply opacity-100 translate-y-0; }
+            .nav-active-link { @apply text-textMain font-bold relative; }
+            .nav-active-link::after { @apply content-[''] absolute -bottom-[5px] left-0 w-full h-[2px] bg-textMain rounded-sm; }
+            .toggle .line1 { @apply -rotate-45 -translate-x-[5px] translate-y-[8px]; }
+            .toggle .line2 { @apply opacity-0; }
+            .toggle .line3 { @apply rotate-45 -translate-x-[5px] -translate-y-[8px]; }
         }
     </style>
 </head>
-<body>
+<body class="bg-deepNavy text-textMain leading-relaxed overflow-x-hidden font-sans">
 
-    <style>
-        /* Navbar 공통 스타일 */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 80px;
-            background-color: rgba(10, 17, 40, 0.95); /* 딥 네이비 (살짝 투명하게) */
-            backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 5%;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        /* 로고 텍스트 */
-        .nav-logo a {
-            color: #F8F9FA;
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        /* 네비게이션 링크 리스트 */
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 40px;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-links li a {
-            color: #ADB5BD; /* 기본 모노톤 */
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: 500;
-            position: relative;
-            transition: color 0.3s ease;
-            padding: 5px 0;
-        }
-
-        /* 호버 효과 */
-        .nav-links li a:hover {
-            color: #F8F9FA;
-        }
-
-        /* ⭐ 현재 페이지 강조 표시 (active) ⭐ */
-        .nav-links li a.active {
-            color: #F8F9FA;
-            font-weight: 700;
-        }
-
-        .nav-links li a.active::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: #F8F9FA; /* 밑줄 효과 */
-            border-radius: 2px;
-        }
-
-        /* 햄버거 메뉴 버튼 (데스크톱에서는 숨김) */
-        .hamburger {
-            display: none;
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 5px;
-        }
-
-        .hamburger .line {
-            width: 25px;
-            height: 3px;
-            background-color: #F8F9FA;
-            margin: 5px 0;
-            transition: all 0.3s ease;
-        }
-
-        /* --- 모바일 반응형 --- */
-        @media (max-width: 768px) {
-            .hamburger {
-                display: block; /* 모바일에서 햄버거 메뉴 표시 */
-            }
-
-            .nav-links {
-                position: absolute;
-                top: 80px;
-                right: -100%; /* 화면 밖으로 숨김 */
-                width: 60%;
-                height: 100vh;
-                background-color: #0A1128;
-                flex-direction: column;
-                align-items: center;
-                justify-content: flex-start;
-                padding-top: 50px;
-                transition: right 0.4s ease;
-                box-shadow: -5px 0 10px rgba(0,0,0,0.2);
-            }
-
-            /* JS로 nav-active 클래스가 붙으면 슬라이드 인 */
-            .nav-links.nav-active {
-                right: 0;
-            }
-
-            .nav-links li {
-                margin: 20px 0;
-            }
-
-            /* 햄버거 메뉴 애니메이션 (X 모양으로 변환) */
-            .hamburger.toggle .line1 {
-                transform: rotate(-45deg) translate(-5px, 6px);
-            }
-            .hamburger.toggle .line2 {
-                opacity: 0;
-            }
-            .hamburger.toggle .line3 {
-                transform: rotate(45deg) translate(-5px, -6px);
-            }
-        }
-    </style>
-
-    <nav class="navbar">
-        <div class="nav-logo">
-            <a href="index.html">HD(HyunDo)</a>
+    <nav class="fixed top-0 left-0 w-full h-[80px] bg-deepNavy/95 backdrop-blur-md flex justify-between items-center px-[5%] z-50 shadow-md">
+        <div class="text-2xl font-bold tracking-wide">
+            <a href="index.html" class="text-textMain">안녕하세요박현도입니다잘부탁드립니다</a>
         </div>
-        
-        <ul class="nav-links" id="nav-links">
-            <li><a href="index.html" class="active">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="skills.html">Skills</a></li>
-            <li><a href="vision.html">Vision</a></li>
+        <ul id="nav-links" class="flex list-none gap-10 m-0 p-0 max-md:absolute max-md:top-[80px] max-md:-right-full max-md:w-[60%] max-md:h-screen max-md:bg-deepNavy max-md:flex-col max-md:items-center max-md:justify-start max-md:pt-[50px] max-md:transition-all max-md:duration-400 max-md:shadow-[-5px_0_10px_rgba(0,0,0,0.2)]">
+            <li class="max-md:my-5"><a href="index.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Home</a></li>
+            <li class="max-md:my-5"><a href="about.html" class="nav-active-link text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg">About</a></li>
+            <li class="max-md:my-5"><a href="skills.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Skills</a></li>
+            <li class="max-md:my-5"><a href="vision.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Vision</a></li>
         </ul>
-
-        <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
-            <div class="line line1"></div>
-            <div class="line line2"></div>
-            <div class="line line3"></div>
+        <button id="hamburger" class="hidden max-md:flex flex-col gap-[5px] cursor-pointer bg-transparent border-none p-1" aria-label="메뉴 열기">
+            <div class="line line1 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
+            <div class="line line2 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
+            <div class="line line3 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
         </button>
     </nav>
 
-    <script>
-        // 햄버거 메뉴 동작 스크립트
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('nav-links');
-
-        hamburger.addEventListener('click', () => {
-            // 메뉴 슬라이드 토글
-            navLinks.classList.toggle('nav-active');
-            // 햄버거 아이콘 X 모양 애니메이션 토글
-            hamburger.classList.toggle('toggle');
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. Home의 active 해제
-            const homeLink = document.querySelector('.nav-links a[href="index.html"]');
-            if(homeLink) homeLink.classList.remove('active');
-
-            // 2. About(자기소개) 메뉴에 active 추가 및 href 속성을 intro.html로 변경
-            const aboutLink = document.querySelector('.nav-links a[href="about.html"]');
-            if(aboutLink) {
-                aboutLink.classList.add('active');
-                aboutLink.setAttribute('href', 'intro.html');
-                aboutLink.textContent = 'About'; 
-            }
-        });
-    </script>
-
-    <section class="about-section">
-        <div class="profile-card">
-            <h1>프로필</h1>
-            <p>스포츠의 역동성과 거침없는 실행력을 코드로 풀어냅니다.</p>
+    <section class="pt-[150px] pb-[100px] min-h-screen flex flex-col justify-center items-center px-5">
+        <div class="fade-in-up visible bg-navyLight border border-white/5 rounded-2xl p-10 md:p-[50px_40px] w-full max-w-[600px] shadow-2xl">
+            <h1 class="text-3xl font-bold mb-3 text-textMain break-keep">프로필</h1>
+            <p class="text-textMuted mb-10 text-lg border-b border-white/10 pb-5 break-keep">스포츠의 역동성과 거침없는 실행력을 코드로 풀어냅니다.</p>
             
-            <ul class="info-list">
-                <li>
-                    <span class="label">이름</span>
-                    <span class="value">박현도</span>
+            <ul class="list-none space-y-5">
+                <li class="flex flex-col md:flex-row md:items-center text-lg">
+                    <span class="w-[120px] font-bold text-textMuted tracking-widest mb-1 md:mb-0">이름</span>
+                    <span class="font-medium text-textMain">박현도</span>
                 </li>
-                <li>
-                    <span class="label">출생연도</span>
-                    <span class="value">1997년(만28세)</span>
+                <li class="flex flex-col md:flex-row md:items-center text-lg">
+                    <span class="w-[120px] font-bold text-textMuted tracking-widest mb-1 md:mb-0">출생연도</span>
+                    <span class="font-medium text-textMain">1997년(만28세)</span>
                 </li>
-                <li>
-                    <span class="label">취미</span>
-                    <span class="value">축구 / 풋살</span>
+                <li class="flex flex-col md:flex-row md:items-center text-lg">
+                    <span class="w-[120px] font-bold text-textMuted tracking-widest mb-1 md:mb-0">취미</span>
+                    <span class="font-medium text-textMain">축구 / 풋살</span>
                 </li>
-                <li>
-                    <span class="label">MBTI</span>
-                    <span class="value">
+                <li class="flex flex-col md:flex-row md:items-center text-lg">
+                    <span class="w-[120px] font-bold text-textMuted tracking-widest mb-1 md:mb-0">MBTI</span>
+                    <span class="font-medium text-textMain flex items-center mt-1 md:mt-0">
                         ESTP 
-                        <span class="mbti-badge">Active & Logical</span>
+                        <span class="bg-accentRed text-white px-3 py-1 rounded-full text-[0.9rem] font-extrabold ml-3 tracking-wide shadow-[0_4px_10px_rgba(230,57,70,0.3)]">Active & Logical</span>
                     </span>
                 </li>
             </ul>
         </div>
     </section>
 
+    <script>
+        document.getElementById('hamburger').addEventListener('click', function() {
+            const navLinks = document.getElementById('nav-links');
+            navLinks.classList.toggle('max-md:-right-full');
+            navLinks.classList.toggle('max-md:right-0');
+            this.classList.toggle('toggle');
+        });
+    </script>
 </body>
 </html>

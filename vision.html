@@ -5,211 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vision | 박현도</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-    
-    <style>
-        :root {
-            --deep-navy: #0A1128;
-            --navy-light: #162447;
-            --text-main: #F8F9FA;
-            --text-muted: #ADB5BD;
-            --accent-blue: #4361EE; /* 삼성의 블루를 연상시키는 포인트 컬러 */
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Pretendard', sans-serif;
-        }
-
-        body {
-            background-color: var(--deep-navy);
-            color: var(--text-main);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Vision 섹션 스타일 */
-        .vision-section {
-            padding-top: 130px; /* 네비게이션 바 높이 고려 */
-            padding-bottom: 100px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding-left: 5%;
-            padding-right: 5%;
-        }
-
-        .vision-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            max-width: 1100px;
-            width: 100%;
-            align-items: center;
-        }
-
-        /* 텍스트 콘텐츠 영역 */
-        .vision-text {
-            animation: fadeInLeft 0.8s ease-out;
-        }
-
-        .vision-text h1 {
-            font-size: 2.8rem;
-            margin-bottom: 20px;
-            line-height: 1.3;
-        }
-
-        .vision-text h1 span {
-            color: var(--accent-blue);
-        }
-
-        .vision-text h2 {
-            font-size: 1.5rem;
-            color: var(--text-main);
-            margin-bottom: 15px;
-            margin-top: 40px;
-            border-left: 4px solid var(--accent-blue);
-            padding-left: 10px;
-        }
-
-        .vision-text p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            word-break: keep-all;
-        }
-
-        /* 이미지 콘텐츠 (밈) 영역 */
-        .vision-image-wrapper {
-            background-color: var(--navy-light);
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            animation: fadeInRight 0.8s ease-out;
-            text-align: center;
-        }
-
-        .vision-image-wrapper img {
-            width: 100%;
-            border-radius: 8px;
-            display: block;
-        }
-
-        .image-caption {
-            margin-top: 15px;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            font-style: italic;
-        }
-
-        /* 페이드인 애니메이션 */
-        @keyframes fadeInLeft {
-            from { opacity: 0; transform: translateX(-30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes fadeInRight {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        /* 모바일 반응형 */
-        @media (max-width: 768px) {
-            .vision-container {
-                grid-template-columns: 1fr;
-                gap: 40px;
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deepNavy: '#0A1128', navyLight: '#162447', textMain: '#F8F9FA', textMuted: '#ADB5BD',
+                        accentBlue: '#4361EE'
+                    },
+                    fontFamily: { sans: ['Pretendard', 'sans-serif'] }
+                }
             }
-            .vision-text h1 {
-                font-size: 2.2rem;
-            }
-            .vision-section {
-                padding-top: 110px;
-            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .fade-in-left { @apply opacity-0 -translate-x-[30px] transition-all duration-[800ms] ease-out; }
+            .fade-in-left.visible { @apply opacity-100 translate-x-0; }
+            .fade-in-right { @apply opacity-0 translate-x-[30px] transition-all duration-[800ms] ease-out; }
+            .fade-in-right.visible { @apply opacity-100 translate-x-0; }
+            .nav-active-link { @apply text-textMain font-bold relative; }
+            .nav-active-link::after { @apply content-[''] absolute -bottom-[5px] left-0 w-full h-[2px] bg-textMain rounded-sm; }
+            .toggle .line1 { @apply -rotate-45 -translate-x-[5px] translate-y-[8px]; }
+            .toggle .line2 { @apply opacity-0; }
+            .toggle .line3 { @apply rotate-45 -translate-x-[5px] -translate-y-[8px]; }
         }
     </style>
 </head>
-<body>
+<body class="bg-deepNavy text-textMain leading-relaxed overflow-x-hidden font-sans">
 
-    <style>
-        .navbar {
-            position: fixed; top: 0; left: 0; width: 100%; height: 80px;
-            background-color: rgba(10, 17, 40, 0.95); backdrop-filter: blur(10px);
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 5%; z-index: 1000; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-        .nav-logo a { color: #F8F9FA; text-decoration: none; font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; }
-        .nav-links { display: flex; list-style: none; gap: 40px; margin: 0; padding: 0; }
-        .nav-links li a { color: #ADB5BD; text-decoration: none; font-size: 1.1rem; font-weight: 500; position: relative; transition: color 0.3s ease; padding: 5px 0; }
-        .nav-links li a:hover { color: #F8F9FA; }
-        .nav-links li a.active { color: #F8F9FA; font-weight: 700; }
-        .nav-links li a.active::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px; background-color: #F8F9FA; border-radius: 2px; }
-        .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 5px; }
-        .hamburger .line { width: 25px; height: 3px; background-color: #F8F9FA; margin: 5px 0; transition: all 0.3s ease; }
-        @media (max-width: 768px) {
-            .hamburger { display: block; }
-            .nav-links { position: absolute; top: 80px; right: -100%; width: 60%; height: 100vh; background-color: #0A1128; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 50px; transition: right 0.4s ease; box-shadow: -5px 0 10px rgba(0,0,0,0.2); }
-            .nav-links.nav-active { right: 0; }
-            .nav-links li { margin: 20px 0; }
-            .hamburger.toggle .line1 { transform: rotate(-45deg) translate(-5px, 6px); }
-            .hamburger.toggle .line2 { opacity: 0; }
-            .hamburger.toggle .line3 { transform: rotate(45deg) translate(-5px, -6px); }
-        }
-    </style>
-
-    <nav class="navbar">
-        <div class="nav-logo">
-            <a href="index.html">HD(HyunDo)</a>
+    <nav class="fixed top-0 left-0 w-full h-[80px] bg-deepNavy/95 backdrop-blur-md flex justify-between items-center px-[5%] z-50 shadow-md">
+        <div class="text-2xl font-bold tracking-wide">
+            <a href="index.html" class="text-textMain">안녕하세요박현도입니다잘부탁드립니다</a>
         </div>
-        
-        <ul class="nav-links" id="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="skills.html">Skills</a></li>
-            <li><a href="vision.html" class="active">Vision</a></li>
+        <ul id="nav-links" class="flex list-none gap-10 m-0 p-0 max-md:absolute max-md:top-[80px] max-md:-right-full max-md:w-[60%] max-md:h-screen max-md:bg-deepNavy max-md:flex-col max-md:items-center max-md:justify-start max-md:pt-[50px] max-md:transition-all max-md:duration-400 max-md:shadow-[-5px_0_10px_rgba(0,0,0,0.2)]">
+            <li class="max-md:my-5"><a href="index.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Home</a></li>
+            <li class="max-md:my-5"><a href="about.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">About</a></li>
+            <li class="max-md:my-5"><a href="skills.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Skills</a></li>
+            <li class="max-md:my-5"><a href="vision.html" class="nav-active-link text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg">Vision</a></li>
         </ul>
-
-        <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
-            <div class="line line1"></div>
-            <div class="line line2"></div>
-            <div class="line line3"></div>
+        <button id="hamburger" class="hidden max-md:flex flex-col gap-[5px] cursor-pointer bg-transparent border-none p-1" aria-label="메뉴 열기">
+            <div class="line line1 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
+            <div class="line line2 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
+            <div class="line line3 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
         </button>
     </nav>
 
-    <script>
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('nav-links');
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('nav-active');
-            hamburger.classList.toggle('toggle');
-        });
-    </script>
-    <section class="vision-section">
-        <div class="vision-container">
+    <section class="pt-[130px] md:pt-[150px] pb-[100px] min-h-screen flex justify-center items-center px-[5%]">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-[40px] md:gap-[50px] max-w-[1100px] w-full items-center">
             
-            <div class="vision-text">
-                <h1>SSAFY에서 증명하고,<br><span>삼성</span>으로 향합니다.</h1>
+            <div class="fade-in-left visible">
+                <h1 class="text-[2.2rem] md:text-[2.8rem] font-bold mb-5 leading-[1.3] break-keep">
+                    SSAFY에서 증명하고,<br><span class="text-accentBlue">삼성</span>으로 향합니다.
+                </h1>
                 
-                <h2>🤝 상부상조의 시너지</h2>
-                <p>
+                <h2 class="text-[1.5rem] text-textMain mb-4 mt-10 border-l-4 border-accentBlue pl-3 break-keep">🤝 상부상조의 시너지</h2>
+                <p class="text-textMuted text-[1.1rem] mb-5 break-keep">
                     삼성에서 인정한 뛰어난 인재들과 함께 호흡합니다. 복잡한 알고리즘 시뮬레이션부터 백엔드 성능 최적화 노하우까지, 동료들과 아낌없이 개발 지식을 공유하며 다 같이 성장하겠습니다. 우리가 함께 흘리는 땀방울이 모두의 취업을 위한 가장 강력한 무기가 될 것입니다.
                 </p>
 
-                <h2>🎯 최종 목표는 하나</h2>
-                <p>
+                <h2 class="text-[1.5rem] text-textMain mb-4 mt-10 border-l-4 border-accentBlue pl-3 break-keep">🎯 최종 목표는 하나</h2>
+                <p class="text-textMuted text-[1.1rem] mb-5 break-keep">
                     치열하게 부딪히고 끈질기게 해결하는 ESTP의 실행력으로, 이곳 SSAFY에서 제 실력을 확실히 증명하겠습니다. 그리고 다 같이 목표 기업을 부수고 나아가겠습니다.
                 </p>
             </div>
 
-            <div class="vision-image-wrapper">
-                <img src="image.png" alt="이천수 밈: SSAFY에서 잘해서 삼성 가겠습니다">
-                <p class="image-caption">"일단 SSAFY에서 제 실력을 인정받고..."</p>
+            <div class="fade-in-right visible bg-navyLight p-5 rounded-2xl border border-white/5 shadow-2xl text-center">
+                <img src="image.png" alt="이천수 밈: SSAFY에서 잘해서 삼성 가겠습니다" class="w-full rounded-lg block mx-auto">
+                <p class="mt-4 text-[0.95rem] text-textMuted italic">"일단 SSAFY에서 제 실력을 인정받고..."</p>
             </div>
 
         </div>
     </section>
 
+    <script>
+        document.getElementById('hamburger').addEventListener('click', function() {
+            const navLinks = document.getElementById('nav-links');
+            navLinks.classList.toggle('max-md:-right-full');
+            navLinks.classList.toggle('max-md:right-0');
+            this.classList.toggle('toggle');
+        });
+    </script>
 </body>
 </html>
