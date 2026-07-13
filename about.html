@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me | 박현도</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <style>
+        :root {
+            --deep-navy: #0A1128;
+            --navy-light: #162447;
+            --text-main: #F8F9FA;
+            --text-muted: #ADB5BD;
+            --accent-red: #E63946; /* 열정을 상징하는 크림슨 레드 포인트 */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        body {
+            background-color: var(--deep-navy);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 자기소개 섹션 스타일 */
+        .about-section {
+            padding-top: 150px; /* 네비게이션 바 높이(80px) 고려 */
+            padding-bottom: 100px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .profile-card {
+            background-color: var(--navy-light);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .profile-card h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .profile-card > p {
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+
+        .info-list {
+            list-style: none;
+        }
+
+        .info-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .info-list .label {
+            width: 120px;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+
+        .info-list .value {
+            font-weight: 500;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+        }
+
+        /* MBTI 강조 뱃지 */
+        .mbti-badge {
+            background-color: var(--accent-red);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            margin-left: 10px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(230, 57, 70, 0.3);
+        }
+
+        /* 페이드인 애니메이션 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 모바일 반응형 */
+        @media (max-width: 768px) {
+            .profile-card {
+                padding: 40px 25px;
+            }
+            .info-list li {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .info-list .label {
+                margin-bottom: 5px;
+                font-size: 1rem;
+            }
+            .info-list .value {
+                font-size: 1.1rem;
+            }
+            .mbti-badge {
+                margin-left: 0;
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <style>
+        /* Navbar 공통 스타일 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background-color: rgba(10, 17, 40, 0.95); /* 딥 네이비 (살짝 투명하게) */
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 로고 텍스트 */
+        .nav-logo a {
+            color: #F8F9FA;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* 네비게이션 링크 리스트 */
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li a {
+            color: #ADB5BD; /* 기본 모노톤 */
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+            padding: 5px 0;
+        }
+
+        /* 호버 효과 */
+        .nav-links li a:hover {
+            color: #F8F9FA;
+        }
+
+        /* ⭐ 현재 페이지 강조 표시 (active) ⭐ */
+        .nav-links li a.active {
+            color: #F8F9FA;
+            font-weight: 700;
+        }
+
+        .nav-links li a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #F8F9FA; /* 밑줄 효과 */
+            border-radius: 2px;
+        }
+
+        /* 햄버거 메뉴 버튼 (데스크톱에서는 숨김) */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 5px;
+        }
+
+        .hamburger .line {
+            width: 25px;
+            height: 3px;
+            background-color: #F8F9FA;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        /* --- 모바일 반응형 --- */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block; /* 모바일에서 햄버거 메뉴 표시 */
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 80px;
+                right: -100%; /* 화면 밖으로 숨김 */
+                width: 60%;
+                height: 100vh;
+                background-color: #0A1128;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 50px;
+                transition: right 0.4s ease;
+                box-shadow: -5px 0 10px rgba(0,0,0,0.2);
+            }
+
+            /* JS로 nav-active 클래스가 붙으면 슬라이드 인 */
+            .nav-links.nav-active {
+                right: 0;
+            }
+
+            .nav-links li {
+                margin: 20px 0;
+            }
+
+            /* 햄버거 메뉴 애니메이션 (X 모양으로 변환) */
+            .hamburger.toggle .line1 {
+                transform: rotate(-45deg) translate(-5px, 6px);
+            }
+            .hamburger.toggle .line2 {
+                opacity: 0;
+            }
+            .hamburger.toggle .line3 {
+                transform: rotate(45deg) translate(-5px, -6px);
+            }
+        }
+    </style>
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <a href="index.html">HD(HyunDo)</a>
+        </div>
+        
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="skills.html">Skills</a></li>
+            <li><a href="vision.html">Vision</a></li>
+        </ul>
+
+        <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+            <div class="line line1"></div>
+            <div class="line line2"></div>
+            <div class="line line3"></div>
+        </button>
+    </nav>
+
+    <script>
+        // 햄버거 메뉴 동작 스크립트
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburger.addEventListener('click', () => {
+            // 메뉴 슬라이드 토글
+            navLinks.classList.toggle('nav-active');
+            // 햄버거 아이콘 X 모양 애니메이션 토글
+            hamburger.classList.toggle('toggle');
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Home의 active 해제
+            const homeLink = document.querySelector('.nav-links a[href="index.html"]');
+            if(homeLink) homeLink.classList.remove('active');
+
+            // 2. About(자기소개) 메뉴에 active 추가 및 href 속성을 intro.html로 변경
+            const aboutLink = document.querySelector('.nav-links a[href="about.html"]');
+            if(aboutLink) {
+                aboutLink.classList.add('active');
+                aboutLink.setAttribute('href', 'intro.html');
+                aboutLink.textContent = 'About'; 
+            }
+        });
+    </script>
+
+    <section class="about-section">
+        <div class="profile-card">
+            <h1>프로필</h1>
+            <p>스포츠의 역동성과 거침없는 실행력을 코드로 풀어냅니다.</p>
+            
+            <ul class="info-list">
+                <li>
+                    <span class="label">이름</span>
+                    <span class="value">박현도</span>
+                </li>
+                <li>
+                    <span class="label">출생연도</span>
+                    <span class="value">1997년(만28세)</span>
+                </li>
+                <li>
+                    <span class="label">취미</span>
+                    <span class="value">축구 / 풋살</span>
+                </li>
+                <li>
+                    <span class="label">MBTI</span>
+                    <span class="value">
+                        ESTP 
+                        <span class="mbti-badge">Active & Logical</span>
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+</body>
+</html>

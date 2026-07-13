@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skills & Algorithm | 박현도</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <style>
+        :root {
+            --deep-navy: #0A1128;
+            --navy-light: #162447;
+            --text-main: #F8F9FA;
+            --text-muted: #ADB5BD;
+            --spring-green: #6DB33F; /* Spring Boot 포인트 컬러 */
+            --gold-color: #E4A951; /* 백준 골드 티어 포인트 컬러 */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        body {
+            background-color: var(--deep-navy);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Skills 섹션 스타일 */
+        .skills-section {
+            padding-top: 150px;
+            padding-bottom: 100px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding-left: 5%;
+            padding-right: 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .section-title h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* 카드 컨테이너 */
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* 개별 카드 스타일 */
+        .skill-card {
+            background-color: var(--navy-light);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 50px 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            animation: fadeInUp 0.8s ease-out;
+            transition: transform 0.3s ease;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .skill-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .skill-header h2 {
+            font-size: 1.8rem;
+        }
+
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            margin-left: 15px;
+            letter-spacing: 1px;
+        }
+
+        .badge-spring {
+            background-color: rgba(109, 179, 63, 0.2);
+            color: var(--spring-green);
+            border: 1px solid var(--spring-green);
+        }
+
+        .badge-gold {
+            background-color: rgba(228, 169, 81, 0.2);
+            color: var(--gold-color);
+            border: 1px solid var(--gold-color);
+        }
+
+        .skill-body p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            word-break: keep-all;
+        }
+
+        .skill-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .tag {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 팩트 체크 코멘트 (솔직함 강조) */
+        .fact-check {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-left: 3px solid var(--gold-color);
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+            color: #d1d5db;
+        }
+
+        .fact-check strong {
+            color: var(--gold-color);
+        }
+
+        /* 애니메이션 */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 모바일 반응형 */
+        @media (max-width: 768px) {
+            .skills-container {
+                grid-template-columns: 1fr;
+            }
+            .skill-card {
+                padding: 40px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <style>
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; height: 80px;
+            background-color: rgba(10, 17, 40, 0.95); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 5%; z-index: 1000; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        .nav-logo a { color: #F8F9FA; text-decoration: none; font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; }
+        .nav-links { display: flex; list-style: none; gap: 40px; margin: 0; padding: 0; }
+        .nav-links li a { color: #ADB5BD; text-decoration: none; font-size: 1.1rem; font-weight: 500; position: relative; transition: color 0.3s ease; padding: 5px 0; }
+        .nav-links li a:hover { color: #F8F9FA; }
+        .nav-links li a.active { color: #F8F9FA; font-weight: 700; }
+        .nav-links li a.active::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px; background-color: #F8F9FA; border-radius: 2px; }
+        .hamburger { display: none; cursor: pointer; background: none; border: none; padding: 5px; }
+        .hamburger .line { width: 25px; height: 3px; background-color: #F8F9FA; margin: 5px 0; transition: all 0.3s ease; }
+        @media (max-width: 768px) {
+            .hamburger { display: block; }
+            .nav-links { position: absolute; top: 80px; right: -100%; width: 60%; height: 100vh; background-color: #0A1128; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 50px; transition: right 0.4s ease; box-shadow: -5px 0 10px rgba(0,0,0,0.2); }
+            .nav-links.nav-active { right: 0; }
+            .nav-links li { margin: 20px 0; }
+            .hamburger.toggle .line1 { transform: rotate(-45deg) translate(-5px, 6px); }
+            .hamburger.toggle .line2 { opacity: 0; }
+            .hamburger.toggle .line3 { transform: rotate(45deg) translate(-5px, -6px); }
+        }
+    </style>
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <a href="index.html">HD(HyunDo)</a>
+        </div>
+        
+        <ul class="nav-links" id="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="skills.html">Skills</a></li>
+            <li><a href="vision.html">Vision</a></li>
+        </ul>
+
+        <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+            <div class="line line1"></div>
+            <div class="line line2"></div>
+            <div class="line line3"></div>
+        </button>
+    </nav>
+
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('nav-active');
+            hamburger.classList.toggle('toggle');
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Home의 active 해제
+            const homeLink = document.querySelector('.nav-links a[href="index.html"]');
+            if(homeLink) homeLink.classList.remove('active');
+
+            // 2. Projects 메뉴를 Skills로 변경하고 active 추가
+            const projectsLink = document.querySelector('.nav-links a[href="projects.html"]');
+            if(projectsLink) {
+                projectsLink.classList.add('active');
+                projectsLink.setAttribute('href', 'skills.html');
+                projectsLink.textContent = 'Skills'; 
+            }
+        });
+    </script>
+
+    <section class="skills-section">
+        <div class="section-title">
+            <h1>나의 무기와 문제 해결력</h1>
+            <p>명확한 근거를 가진 기술 스택과 끊임없이 단련하는 알고리즘</p>
+        </div>
+
+        <div class="skills-container">
+            <div class="skill-card">
+                <div class="skill-header">
+                    <h2>Tech Stack</h2>
+                    <span class="badge badge-spring">Main Weapon</span>
+                </div>
+                <div class="skill-body">
+                    <p>견고한 백엔드 아키텍처를 구축하기 위한 저의 핵심 무기입니다. 단순히 프레임워크의 사용법을 아는 것을 넘어, 내부의 동작 원리를 파악하고 성능 최적화의 근거를 찾는 데 집중합니다.</p>
+                    
+                    <div class="skill-tags">
+                        <span class="tag">Java</span>
+                        <span class="tag">Spring Boot</span>
+                        <span class="tag">JPA / Hibernate</span>
+                        <span class="tag">MySQL</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="skill-card">
+                <div class="skill-header">
+                    <h2>Algorithm</h2>
+                    <span class="badge badge-gold">Baekjoon Gold I</span>
+                </div>
+                <div class="skill-body">
+                    <p>기업 코딩테스트를 위한 '하드 구현(시뮬레이션)'을 주로 연습하며, 특히 재귀를 활용한 DFS/BFS 탐색 시 객체 참조와 메모리 흐름을 정확히 통제하는 데 집중하며 끈질기게 구현력을 기르고 있습니다.</p>
+                    
+                    <div class="fact-check">
+                        <strong>🎯 현도's 팩트체크:</strong><br>
+                        "프로필상 공식 티어는 <b>골드 1</b>이지만, 제 스스로 느끼는 체감 실력은 <b>골드 3~4</b> 정도라고 생각합니다. 그 간극을 메우기 위해 오늘도 치열하게 시뮬레이션 문제를 뜯어보고 있습니다."
+                    </div>
+
+                    <div class="skill-tags">
+                        <span class="tag">Hard Implementation</span>
+                        <span class="tag">DFS / BFS</span>
+                        <span class="tag">Simulation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
