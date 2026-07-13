@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="ko">
+<!-- 기본적으로 다크모드(dark)가 적용되도록 class="dark" 추가 -->
+<html lang="ko" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vision | 박현도</title>
+    <title>Vision & Guestbook | 박현도</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class', // 다크모드 수동 제어 활성화
             theme: {
                 extend: {
                     colors: {
@@ -21,71 +23,275 @@
     </script>
     <style type="text/tailwindcss">
         @layer utilities {
-            .fade-in-left { @apply opacity-0 -translate-x-[30px] transition-all duration-[800ms] ease-out; }
-            .fade-in-left.visible { @apply opacity-100 translate-x-0; }
-            .fade-in-right { @apply opacity-0 translate-x-[30px] transition-all duration-[800ms] ease-out; }
-            .fade-in-right.visible { @apply opacity-100 translate-x-0; }
-            .nav-active-link { @apply text-textMain font-bold relative; }
-            .nav-active-link::after { @apply content-[''] absolute -bottom-[5px] left-0 w-full h-[2px] bg-textMain rounded-sm; }
+            .fade-in-up { @apply opacity-0 translate-y-[30px] transition-all duration-[800ms] ease-out; }
+            .fade-in-up.visible { @apply opacity-100 translate-y-0; }
+            
+            /* 라이트/다크 모드에 따른 네비게이션 밑줄 색상 변경 */
+            .nav-active-link { @apply font-bold relative text-gray-900 dark:text-textMain; }
+            .nav-active-link::after { @apply content-[''] absolute -bottom-[5px] left-0 w-full h-[2px] bg-gray-900 dark:bg-textMain rounded-sm; }
+            
             .toggle .line1 { @apply -rotate-45 -translate-x-[5px] translate-y-[8px]; }
             .toggle .line2 { @apply opacity-0; }
             .toggle .line3 { @apply rotate-45 -translate-x-[5px] -translate-y-[8px]; }
         }
     </style>
 </head>
-<body class="bg-deepNavy text-textMain leading-relaxed overflow-x-hidden font-sans">
+<!-- 라이트 모드일 때는 bg-gray-50, 다크 모드일 때는 bg-deepNavy 적용 -->
+<body class="bg-gray-50 dark:bg-deepNavy text-gray-800 dark:text-textMain leading-relaxed overflow-x-hidden font-sans transition-colors duration-500">
 
-    <nav class="fixed top-0 left-0 w-full h-[80px] bg-deepNavy/95 backdrop-blur-md flex justify-between items-center px-[5%] z-50 shadow-md">
+    <!-- [도전 2] 배경 파티클 캔버스 (z-index를 낮춰 배경으로 배치) -->
+    <canvas id="particleCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1]"></canvas>
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 w-full h-[80px] bg-white/80 dark:bg-deepNavy/95 backdrop-blur-md flex justify-between items-center px-[5%] z-50 shadow-sm dark:shadow-md transition-colors duration-500 border-b border-gray-200 dark:border-transparent">
         <div class="text-2xl font-bold tracking-wide">
-            <a href="index.html" class="text-textMain">안녕하세요박현도입니다잘부탁드립니다</a>
+            <a href="index.html" class="text-gray-900 dark:text-textMain transition-colors">안녕하세요박현도입니다잘부탁드립니다</a>
         </div>
-        <ul id="nav-links" class="flex list-none gap-10 m-0 p-0 max-md:absolute max-md:top-[80px] max-md:-right-full max-md:w-[60%] max-md:h-screen max-md:bg-deepNavy max-md:flex-col max-md:items-center max-md:justify-start max-md:pt-[50px] max-md:transition-all max-md:duration-400 max-md:shadow-[-5px_0_10px_rgba(0,0,0,0.2)]">
-            <li class="max-md:my-5"><a href="index.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Home</a></li>
-            <li class="max-md:my-5"><a href="about.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">About</a></li>
-            <li class="max-md:my-5"><a href="skills.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Skills</a></li>
-            <li class="max-md:my-5"><a href="vision.html" class="nav-active-link text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg">Vision</a></li>
-        </ul>
-        <button id="hamburger" class="hidden max-md:flex flex-col gap-[5px] cursor-pointer bg-transparent border-none p-1" aria-label="메뉴 열기">
-            <div class="line line1 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
-            <div class="line line2 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
-            <div class="line line3 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
-        </button>
+        
+        <div class="flex items-center gap-6">
+            <ul id="nav-links" class="flex list-none gap-10 m-0 p-0 max-md:absolute max-md:top-[80px] max-md:-right-full max-md:w-[60%] max-md:h-screen max-md:bg-white max-md:dark:bg-deepNavy max-md:flex-col max-md:items-center max-md:justify-start max-md:pt-[50px] max-md:transition-all max-md:duration-400 max-md:shadow-[-5px_0_10px_rgba(0,0,0,0.1)] max-md:dark:shadow-[-5px_0_10px_rgba(0,0,0,0.4)]">
+                <li class="max-md:my-5"><a href="index.html" class="text-gray-500 dark:text-textMuted hover:text-gray-900 dark:hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Home</a></li>
+                <li class="max-md:my-5"><a href="about.html" class="text-gray-500 dark:text-textMuted hover:text-gray-900 dark:hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">About</a></li>
+                <li class="max-md:my-5"><a href="skills.html" class="text-gray-500 dark:text-textMuted hover:text-gray-900 dark:hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Skills</a></li>
+                <li class="max-md:my-5"><a href="vision.html" class="nav-active-link text-gray-500 dark:text-textMuted hover:text-gray-900 dark:hover:text-textMain transition-colors duration-300 py-1 text-lg">Vision</a></li>
+            </ul>
+
+            <!-- [도전 1] 다크/라이트 모드 토글 버튼 -->
+            <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-white/10 hover:bg-gray-300 dark:hover:bg-white/20 transition-colors" aria-label="테마 변경">
+                <!-- 해 아이콘 (다크모드일 때 표시) -->
+                <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path>
+                </svg>
+                <!-- 달 아이콘 (라이트모드일 때 표시) -->
+                <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                </svg>
+            </button>
+
+            <!-- 햄버거 버튼 -->
+            <button id="hamburger" class="hidden max-md:flex flex-col gap-[5px] cursor-pointer bg-transparent border-none p-1" aria-label="메뉴 열기">
+                <div class="line line1 w-[25px] h-[3px] bg-gray-900 dark:bg-textMain transition-all duration-300"></div>
+                <div class="line line2 w-[25px] h-[3px] bg-gray-900 dark:bg-textMain transition-all duration-300"></div>
+                <div class="line line3 w-[25px] h-[3px] bg-gray-900 dark:bg-textMain transition-all duration-300"></div>
+            </button>
+        </div>
     </nav>
 
-    <section class="pt-[130px] md:pt-[150px] pb-[100px] min-h-screen flex justify-center items-center px-[5%]">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-[40px] md:gap-[50px] max-w-[1100px] w-full items-center">
-            
-            <div class="fade-in-left visible">
-                <h1 class="text-[2.2rem] md:text-[2.8rem] font-bold mb-5 leading-[1.3] break-keep">
+    <!-- Vision Content -->
+    <section class="pt-[130px] pb-[80px] flex justify-center items-center px-[5%]">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-[40px] max-w-[1100px] w-full items-center">
+            <div class="fade-in-up visible">
+                <h1 class="text-[2.2rem] md:text-[2.8rem] font-bold mb-5 leading-[1.3] break-keep text-gray-900 dark:text-textMain">
                     SSAFY에서 증명하고,<br><span class="text-accentBlue">삼성</span>으로 향합니다.
                 </h1>
-                
-                <h2 class="text-[1.5rem] text-textMain mb-4 mt-10 border-l-4 border-accentBlue pl-3 break-keep">🤝 상부상조의 시너지</h2>
-                <p class="text-textMuted text-[1.1rem] mb-5 break-keep">
-                    삼성에서 인정한 뛰어난 인재들과 함께 호흡합니다. 복잡한 알고리즘 시뮬레이션부터 백엔드 성능 최적화 노하우까지, 동료들과 아낌없이 개발 지식을 공유하며 다 같이 성장하겠습니다. 우리가 함께 흘리는 땀방울이 모두의 취업을 위한 가장 강력한 무기가 될 것입니다.
+                <h2 class="text-[1.5rem] text-gray-800 dark:text-textMain mb-4 mt-10 border-l-4 border-accentBlue pl-3 break-keep">🤝 상부상조의 시너지</h2>
+                <p class="text-gray-600 dark:text-textMuted text-[1.1rem] mb-5 break-keep">
+                    삼성에서 인정한 뛰어난 인재들과 함께 호흡합니다. 복잡한 알고리즘 시뮬레이션부터 백엔드 성능 최적화 노하우까지, 아낌없이 지식을 공유하며 성장하겠습니다.
                 </p>
-
-                <h2 class="text-[1.5rem] text-textMain mb-4 mt-10 border-l-4 border-accentBlue pl-3 break-keep">🎯 최종 목표는 하나</h2>
-                <p class="text-textMuted text-[1.1rem] mb-5 break-keep">
-                    치열하게 부딪히고 끈질기게 해결하는 ESTP의 실행력으로, 이곳 SSAFY에서 제 실력을 확실히 증명하겠습니다. 그리고 다 같이 목표 기업을 부수고 나아가겠습니다.
+                <h2 class="text-[1.5rem] text-gray-800 dark:text-textMain mb-4 mt-10 border-l-4 border-accentBlue pl-3 break-keep">🎯 최종 목표는 하나</h2>
+                <p class="text-gray-600 dark:text-textMuted text-[1.1rem] mb-5 break-keep">
+                    치열하게 부딪히고 끈질기게 해결하는 실행력으로 실력을 증명하고, 다 같이 목표 기업을 부수고 나아가겠습니다.
                 </p>
             </div>
 
-            <div class="fade-in-right visible bg-navyLight p-5 rounded-2xl border border-white/5 shadow-2xl text-center">
-                <img src="image.png" alt="이천수 밈: SSAFY에서 잘해서 삼성 가겠습니다" class="w-full rounded-lg block mx-auto">
-                <p class="mt-4 text-[0.95rem] text-textMuted italic">"일단 SSAFY에서 제 실력을 인정받고..."</p>
+            <div class="fade-in-up visible bg-white dark:bg-navyLight p-5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-xl text-center transition-colors">
+                <img src="image.png" alt="이천수가 말했다.. 레알소시에다드에서 잘해서 레알마드리드로 가겠습니다." class="w-full rounded-lg block mx-auto">
+                <p class="mt-4 text-[0.95rem] text-gray-500 dark:text-textMuted italic">"일단 SSAFY에서 제 실력을 인정받고..."</p>
             </div>
+        </div>
+    </section>
 
+    <!-- [도전 3] 방명록 섹션 (LocalStorage 활용) -->
+    <section class="pb-[100px] px-[5%]">
+        <div class="max-w-[1100px] mx-auto bg-white dark:bg-navyLight p-8 md:p-10 rounded-2xl border border-gray-200 dark:border-white/5 shadow-xl transition-colors fade-in-up visible">
+            <h2 class="text-2xl font-bold mb-2 text-gray-900 dark:text-textMain">📝 동료들의 응원 한마디</h2>
+            <p class="text-gray-600 dark:text-textMuted mb-6 text-sm md:text-base">목표를 향해 함께 달려갈 동료들에게 응원이나 다짐을 남겨주세요! (데이터는 브라우저에 저장됩니다)</p>
+            
+            <!-- 방명록 입력 폼 -->
+            <form id="guestbook-form" class="mb-8 flex flex-col md:flex-row gap-4">
+                <input type="text" id="gb-name" placeholder="작성자 (예: SSAFY 동기)" required class="w-full md:w-1/4 px-4 py-3 rounded-lg bg-gray-50 dark:bg-deepNavy border border-gray-300 dark:border-white/10 text-gray-900 dark:text-textMain focus:outline-none focus:border-accentBlue transition-colors">
+                <input type="text" id="gb-message" placeholder="현도님과 SSAFY에서 함께 이룰 목표를 적어주세요!" required class="w-full md:w-2/4 px-4 py-3 rounded-lg bg-gray-50 dark:bg-deepNavy border border-gray-300 dark:border-white/10 text-gray-900 dark:text-textMain focus:outline-none focus:border-accentBlue transition-colors">
+                <button type="submit" class="w-full md:w-1/4 bg-accentBlue text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors shadow-lg">남기기 🚀</button>
+            </form>
+
+            <!-- 방명록 리스트 출력 영역 -->
+            <div id="guestbook-list" class="space-y-4 max-h-[300px] overflow-y-auto pr-2">
+                <!-- JS를 통해 여기에 방명록 카드가 추가됩니다 -->
+            </div>
         </div>
     </section>
 
     <script>
+        /* =========================================
+           1. 다크/라이트 모드 제어 로직
+           ========================================= */
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+        const htmlElement = document.documentElement;
+
+        // 초기 테마 설정 (로컬 스토리지 확인)
+        if (localStorage.getItem('color-theme') === 'light') {
+            htmlElement.classList.remove('dark');
+            darkIcon.classList.remove('hidden');
+        } else {
+            // 기본값은 다크모드
+            htmlElement.classList.add('dark');
+            lightIcon.classList.remove('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', function() {
+            darkIcon.classList.toggle('hidden');
+            lightIcon.classList.toggle('hidden');
+
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+        });
+
+        /* =========================================
+           2. 방명록 제어 로직 (LocalStorage)
+           ========================================= */
+        const gbForm = document.getElementById('guestbook-form');
+        const gbList = document.getElementById('guestbook-list');
+
+        // 초기 방명록 불러오기
+        function loadGuestbook() {
+            const entries = JSON.parse(localStorage.getItem('ssafy_guestbook')) || [];
+            gbList.innerHTML = '';
+            
+            if(entries.length === 0) {
+                gbList.innerHTML = `<p class="text-center text-gray-500 dark:text-textMuted py-4">아직 작성된 응원이 없습니다. 첫 번째 응원을 남겨주세요!</p>`;
+                return;
+            }
+
+            // 최신 글이 위로 오도록 역순 배치
+            entries.slice().reverse().forEach(entry => {
+                const date = new Date(entry.timestamp).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+                const card = document.createElement('div');
+                card.className = "bg-gray-50 dark:bg-deepNavy p-4 rounded-lg border border-gray-200 dark:border-white/5 flex flex-col md:flex-row md:justify-between md:items-center gap-2";
+                card.innerHTML = `
+                    <div>
+                        <span class="font-bold text-accentBlue mr-2">${entry.name}</span>
+                        <span class="text-gray-800 dark:text-textMain">${entry.message}</span>
+                    </div>
+                    <span class="text-sm text-gray-500 dark:text-gray-500 min-w-[100px] text-right">${date}</span>
+                `;
+                gbList.appendChild(card);
+            });
+        }
+
+        // 방명록 폼 제출 이벤트
+        gbForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('gb-name');
+            const msgInput = document.getElementById('gb-message');
+            
+            const newEntry = {
+                id: Date.now(),
+                name: nameInput.value.trim(),
+                message: msgInput.value.trim(),
+                timestamp: new Date().toISOString()
+            };
+
+            const entries = JSON.parse(localStorage.getItem('ssafy_guestbook')) || [];
+            entries.push(newEntry);
+            localStorage.setItem('ssafy_guestbook', JSON.stringify(entries));
+
+            nameInput.value = '';
+            msgInput.value = '';
+            loadGuestbook(); // 화면 갱신
+        });
+
+        // 페이지 로드 시 방명록 렌더링
+        loadGuestbook();
+
+        /* =========================================
+           3. 배경 파티클 애니메이션 로직 (Canvas)
+           ========================================= */
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedY = Math.random() * -0.5 - 0.2; // 위로 천천히 떠오름
+                this.speedX = Math.random() * 0.4 - 0.2;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                // 화면 밖으로 나가면 아래에서 다시 생성
+                if (this.y < 0) {
+                    this.y = canvas.height;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                // 다크모드/라이트모드에 따라 파티클 색상(투명도) 조정
+                const isDark = htmlElement.classList.contains('dark');
+                ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.15)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            const numberOfParticles = Math.floor((canvas.width * canvas.height) / 15000); // 화면 크기에 비례하여 파티클 수 조절
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        /* =========================================
+           4. 햄버거 메뉴 및 스크롤 페이드 로직
+           ========================================= */
         document.getElementById('hamburger').addEventListener('click', function() {
             const navLinks = document.getElementById('nav-links');
             navLinks.classList.toggle('max-md:-right-full');
             navLinks.classList.toggle('max-md:right-0');
             this.classList.toggle('toggle');
         });
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
     </script>
 </body>
 </html>

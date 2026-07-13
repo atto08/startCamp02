@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -23,54 +24,65 @@
         @layer utilities {
             .fade-in-up { @apply opacity-0 translate-y-[30px] transition-all duration-[800ms] ease-out; }
             .fade-in-up.visible { @apply opacity-100 translate-y-0; }
-            .nav-active-link { @apply text-textMain font-bold relative; }
-            .nav-active-link::after { @apply content-[''] absolute -bottom-[5px] left-0 w-full h-[2px] bg-textMain rounded-sm; }
+            .nav-active-link { @apply font-bold relative text-gray-900 dark:text-textMain; }
+            .nav-active-link::after { @apply content-[''] absolute -bottom-[5px] left-0 w-full h-[2px] bg-gray-900 dark:bg-textMain rounded-sm; }
             .toggle .line1 { @apply -rotate-45 -translate-x-[5px] translate-y-[8px]; }
             .toggle .line2 { @apply opacity-0; }
             .toggle .line3 { @apply rotate-45 -translate-x-[5px] -translate-y-[8px]; }
         }
     </style>
 </head>
-<body class="bg-deepNavy text-textMain leading-relaxed overflow-x-hidden font-sans">
+<body class="bg-gray-50 dark:bg-deepNavy text-gray-800 dark:text-textMain leading-relaxed overflow-x-hidden font-sans transition-colors duration-500">
 
-    <nav class="fixed top-0 left-0 w-full h-[80px] bg-deepNavy/95 backdrop-blur-md flex justify-between items-center px-[5%] z-50 shadow-md">
+    <canvas id="particleCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1]"></canvas>
+
+    <nav class="fixed top-0 left-0 w-full h-[80px] bg-white/80 dark:bg-deepNavy/95 backdrop-blur-md flex justify-between items-center px-[5%] z-50 shadow-sm dark:shadow-md transition-colors duration-500 border-b border-gray-200 dark:border-transparent">
         <div class="text-2xl font-bold tracking-wide">
-            <a href="index.html" class="text-textMain">안녕하세요박현도입니다잘부탁드립니다</a>
+            <a href="index.html" class="text-gray-900 dark:text-textMain transition-colors max-md:text-lg">안녕하세요박현도입니다잘부탁드립니다</a>
         </div>
-        <ul id="nav-links" class="flex list-none gap-10 m-0 p-0 max-md:absolute max-md:top-[80px] max-md:-right-full max-md:w-[60%] max-md:h-screen max-md:bg-deepNavy max-md:flex-col max-md:items-center max-md:justify-start max-md:pt-[50px] max-md:transition-all max-md:duration-400 max-md:shadow-[-5px_0_10px_rgba(0,0,0,0.2)]">
-            <li class="max-md:my-5"><a href="index.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Home</a></li>
-            <li class="max-md:my-5"><a href="about.html" class="nav-active-link text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg">About</a></li>
-            <li class="max-md:my-5"><a href="skills.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Skills</a></li>
-            <li class="max-md:my-5"><a href="vision.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Vision</a></li>
-        </ul>
-        <button id="hamburger" class="hidden max-md:flex flex-col gap-[5px] cursor-pointer bg-transparent border-none p-1" aria-label="메뉴 열기">
-            <div class="line line1 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
-            <div class="line line2 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
-            <div class="line line3 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
-        </button>
+        
+        <div class="flex items-center gap-6">
+            <ul id="nav-links" class="flex list-none gap-10 m-0 p-0 max-md:absolute max-md:top-[80px] max-md:-right-full max-md:w-[60%] max-md:h-screen max-md:bg-white max-md:dark:bg-deepNavy max-md:flex-col max-md:items-center max-md:justify-start max-md:pt-[50px] max-md:transition-all max-md:duration-400 max-md:shadow-[-5px_0_10px_rgba(0,0,0,0.1)] max-md:dark:shadow-[-5px_0_10px_rgba(0,0,0,0.4)]">
+                <li class="max-md:my-5"><a href="index.html" class="text-gray-500 dark:text-textMuted hover:text-gray-900 dark:hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Home</a></li>
+                <li class="max-md:my-5"><a href="about.html" class="nav-active-link text-gray-500 dark:text-textMuted hover:text-gray-900 dark:hover:text-textMain transition-colors duration-300 py-1 text-lg">About</a></li>
+                <li class="max-md:my-5"><a href="skills.html" class="text-gray-500 dark:text-textMuted hover:text-gray-900 dark:hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Skills</a></li>
+                <li class="max-md:my-5"><a href="vision.html" class="text-gray-500 dark:text-textMuted hover:text-gray-900 dark:hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Vision</a></li>
+            </ul>
+
+            <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-white/10 hover:bg-gray-300 dark:hover:bg-white/20 transition-colors">
+                <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path></svg>
+                <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            </button>
+
+            <button id="hamburger" class="hidden max-md:flex flex-col gap-[5px] cursor-pointer bg-transparent border-none p-1">
+                <div class="line line1 w-[25px] h-[3px] bg-gray-900 dark:bg-textMain transition-all duration-300"></div>
+                <div class="line line2 w-[25px] h-[3px] bg-gray-900 dark:bg-textMain transition-all duration-300"></div>
+                <div class="line line3 w-[25px] h-[3px] bg-gray-900 dark:bg-textMain transition-all duration-300"></div>
+            </button>
+        </div>
     </nav>
 
     <section class="pt-[150px] pb-[100px] min-h-screen flex flex-col justify-center items-center px-5">
-        <div class="fade-in-up visible bg-navyLight border border-white/5 rounded-2xl p-10 md:p-[50px_40px] w-full max-w-[600px] shadow-2xl">
-            <h1 class="text-3xl font-bold mb-3 text-textMain break-keep">프로필</h1>
-            <p class="text-textMuted mb-10 text-lg border-b border-white/10 pb-5 break-keep">스포츠의 역동성과 거침없는 실행력을 코드로 풀어냅니다.</p>
+        <div class="fade-in-up visible bg-white dark:bg-navyLight border border-gray-200 dark:border-white/5 rounded-2xl p-10 md:p-[50px_40px] w-full max-w-[600px] shadow-2xl transition-colors">
+            <h1 class="text-3xl font-bold mb-3 text-gray-900 dark:text-textMain break-keep">프로필</h1>
+            <p class="text-gray-600 dark:text-textMuted mb-10 text-lg border-b border-gray-200 dark:border-white/10 pb-5 break-keep">스포츠의 역동성과 거침없는 실행력을 코드로 풀어냅니다.</p>
             
             <ul class="list-none space-y-5">
                 <li class="flex flex-col md:flex-row md:items-center text-lg">
-                    <span class="w-[120px] font-bold text-textMuted tracking-widest mb-1 md:mb-0">이름</span>
-                    <span class="font-medium text-textMain">박현도</span>
+                    <span class="w-[120px] font-bold text-gray-500 dark:text-textMuted tracking-widest mb-1 md:mb-0">이름</span>
+                    <span class="font-medium text-gray-900 dark:text-textMain">박현도</span>
                 </li>
                 <li class="flex flex-col md:flex-row md:items-center text-lg">
-                    <span class="w-[120px] font-bold text-textMuted tracking-widest mb-1 md:mb-0">출생연도</span>
-                    <span class="font-medium text-textMain">1997년(만28세)</span>
+                    <span class="w-[120px] font-bold text-gray-500 dark:text-textMuted tracking-widest mb-1 md:mb-0">출생연도</span>
+                    <span class="font-medium text-gray-900 dark:text-textMain">1997</span>
                 </li>
                 <li class="flex flex-col md:flex-row md:items-center text-lg">
-                    <span class="w-[120px] font-bold text-textMuted tracking-widest mb-1 md:mb-0">취미</span>
-                    <span class="font-medium text-textMain">축구 / 풋살</span>
+                    <span class="w-[120px] font-bold text-gray-500 dark:text-textMuted tracking-widest mb-1 md:mb-0">취미</span>
+                    <span class="font-medium text-gray-900 dark:text-textMain">축구 / 풋살</span>
                 </li>
                 <li class="flex flex-col md:flex-row md:items-center text-lg">
-                    <span class="w-[120px] font-bold text-textMuted tracking-widest mb-1 md:mb-0">MBTI</span>
-                    <span class="font-medium text-textMain flex items-center mt-1 md:mt-0">
+                    <span class="w-[120px] font-bold text-gray-500 dark:text-textMuted tracking-widest mb-1 md:mb-0">MBTI</span>
+                    <span class="font-medium text-gray-900 dark:text-textMain flex items-center mt-1 md:mt-0">
                         ESTP 
                         <span class="bg-accentRed text-white px-3 py-1 rounded-full text-[0.9rem] font-extrabold ml-3 tracking-wide shadow-[0_4px_10px_rgba(230,57,70,0.3)]">Active & Logical</span>
                     </span>
@@ -79,11 +91,35 @@
         </div>
     </section>
 
+    <!-- 공통 스크립트 (다크모드/파티클/햄버거) -->
     <script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+        const htmlElement = document.documentElement;
+        if (localStorage.getItem('color-theme') === 'light') { htmlElement.classList.remove('dark'); darkIcon.classList.remove('hidden'); }
+        else { htmlElement.classList.add('dark'); lightIcon.classList.remove('hidden'); }
+        themeToggleBtn.addEventListener('click', function() {
+            darkIcon.classList.toggle('hidden'); lightIcon.classList.toggle('hidden');
+            if (htmlElement.classList.contains('dark')) { htmlElement.classList.remove('dark'); localStorage.setItem('color-theme', 'light'); }
+            else { htmlElement.classList.add('dark'); localStorage.setItem('color-theme', 'dark'); }
+        });
+
+        const canvas = document.getElementById('particleCanvas'); const ctx = canvas.getContext('2d');
+        let particlesArray = []; canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); });
+        class Particle {
+            constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 2 + 0.5; this.speedY = Math.random() * -0.5 - 0.2; this.speedX = Math.random() * 0.4 - 0.2; }
+            update() { this.y += this.speedY; this.x += this.speedX; if (this.y < 0) { this.y = canvas.height; this.x = Math.random() * canvas.width; } }
+            draw() { const isDark = htmlElement.classList.contains('dark'); ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.15)'; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+        }
+        function initParticles() { particlesArray = []; const numberOfParticles = Math.floor((canvas.width * canvas.height) / 15000); for (let i = 0; i < numberOfParticles; i++) { particlesArray.push(new Particle()); } }
+        function animateParticles() { ctx.clearRect(0, 0, canvas.width, canvas.height); for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); particlesArray[i].draw(); } requestAnimationFrame(animateParticles); }
+        initParticles(); animateParticles();
+
         document.getElementById('hamburger').addEventListener('click', function() {
             const navLinks = document.getElementById('nav-links');
-            navLinks.classList.toggle('max-md:-right-full');
-            navLinks.classList.toggle('max-md:right-0');
+            navLinks.classList.toggle('max-md:-right-full'); navLinks.classList.toggle('max-md:right-0');
             this.classList.toggle('toggle');
         });
     </script>

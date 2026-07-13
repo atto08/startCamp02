@@ -1,101 +1,89 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>박현도 | Active Backend Developer</title>
-    <!-- Pretendard 폰트 로드 -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-    
-    <!-- 1. Tailwind CSS CDN 추가 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 2. Tailwind 환경 설정 (커스텀 색상 및 폰트) -->
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        deepNavy: '#0A1128',
-                        navyLight: '#162447',
-                        textMain: '#F8F9FA',
-                        textMuted: '#ADB5BD',
+                        deepNavy: '#0A1128', navyLight: '#162447', textMain: '#F8F9FA', textMuted: '#ADB5BD',
                     },
-                    fontFamily: {
-                        sans: ['Pretendard', 'sans-serif'],
-                    }
+                    fontFamily: { sans: ['Pretendard', 'sans-serif'] }
                 }
             }
         }
     </script>
-
-    <!-- 3. 스크롤 애니메이션 및 햄버거 메뉴 커스텀 유틸리티 (Tailwind 레이어) -->
     <style type="text/tailwindcss">
         @layer utilities {
-            /* 스크롤 페이드인 애니메이션 */
-            .fade-in {
-                @apply opacity-0 translate-y-[30px] transition-all duration-[800ms] ease-out;
-            }
-            .fade-in.visible {
-                @apply opacity-100 translate-y-0;
-            }
+            .fade-in { @apply opacity-0 translate-y-[30px] transition-all duration-[800ms] ease-out; }
+            .fade-in.visible { @apply opacity-100 translate-y-0; }
             
-            /* 네비게이션 현재 페이지 밑줄 */
-            .nav-active-link {
-                @apply text-textMain font-bold relative;
-            }
-            .nav-active-link::after {
-                @apply content-[''] absolute -bottom-[5px] left-0 w-full h-[2px] bg-textMain rounded-sm;
-            }
-
-            /* 햄버거 메뉴 애니메이션 상태 */
+            .nav-active-link { @apply font-bold relative text-gray-900 dark:text-textMain; }
+            .nav-active-link::after { @apply content-[''] absolute -bottom-[5px] left-0 w-full h-[2px] bg-gray-900 dark:bg-textMain rounded-sm; }
+            
             .toggle .line1 { @apply -rotate-45 -translate-x-[5px] translate-y-[8px]; }
             .toggle .line2 { @apply opacity-0; }
             .toggle .line3 { @apply rotate-45 -translate-x-[5px] -translate-y-[8px]; }
         }
     </style>
 </head>
-<body class="bg-deepNavy text-textMain leading-relaxed overflow-x-hidden font-sans">
+<body class="bg-gray-50 dark:bg-deepNavy text-gray-800 dark:text-textMain leading-relaxed overflow-x-hidden font-sans transition-colors duration-500">
+
+    <!-- 배경 파티클 캔버스 -->
+    <canvas id="particleCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1]"></canvas>
 
     <!-- Navbar -->
-    <nav class="fixed top-0 left-0 w-full h-[80px] bg-deepNavy/95 backdrop-blur-md flex justify-between items-center px-[5%] z-50 shadow-md">
+    <nav class="fixed top-0 left-0 w-full h-[80px] bg-white/80 dark:bg-deepNavy/95 backdrop-blur-md flex justify-between items-center px-[5%] z-50 shadow-sm dark:shadow-md transition-colors duration-500 border-b border-gray-200 dark:border-transparent">
         <div class="text-2xl font-bold tracking-wide">
-            <a href="index.html" class="text-textMain">안녕하세요박현도입니다잘부탁드립니다</a>
+            <a href="index.html" class="text-gray-900 dark:text-textMain transition-colors max-md:text-lg">안녕하세요박현도입니다잘부탁드립니다</a>
         </div>
         
-        <!-- 반응형 네비게이션 링크 -->
-        <ul id="nav-links" class="flex list-none gap-10 m-0 p-0 max-md:absolute max-md:top-[80px] max-md:-right-full max-md:w-[60%] max-md:h-screen max-md:bg-deepNavy max-md:flex-col max-md:items-center max-md:justify-start max-md:pt-[50px] max-md:transition-all max-md:duration-400 max-md:shadow-[-5px_0_10px_rgba(0,0,0,0.2)]">
-            <li class="max-md:my-5"><a href="index.html" class="nav-active-link text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg">Home</a></li>
-            <li class="max-md:my-5"><a href="about.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">About</a></li>
-            <li class="max-md:my-5"><a href="skills.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Skills</a></li>
-            <li class="max-md:my-5"><a href="vision.html" class="text-textMuted hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Vision</a></li>
-        </ul>
+        <div class="flex items-center gap-6">
+            <ul id="nav-links" class="flex list-none gap-10 m-0 p-0 max-md:absolute max-md:top-[80px] max-md:-right-full max-md:w-[60%] max-md:h-screen max-md:bg-white max-md:dark:bg-deepNavy max-md:flex-col max-md:items-center max-md:justify-start max-md:pt-[50px] max-md:transition-all max-md:duration-400 max-md:shadow-[-5px_0_10px_rgba(0,0,0,0.1)] max-md:dark:shadow-[-5px_0_10px_rgba(0,0,0,0.4)]">
+                <li class="max-md:my-5"><a href="index.html" class="nav-active-link text-gray-500 dark:text-textMuted hover:text-gray-900 dark:hover:text-textMain transition-colors duration-300 py-1 text-lg">Home</a></li>
+                <li class="max-md:my-5"><a href="about.html" class="text-gray-500 dark:text-textMuted hover:text-gray-900 dark:hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">About</a></li>
+                <li class="max-md:my-5"><a href="skills.html" class="text-gray-500 dark:text-textMuted hover:text-gray-900 dark:hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Skills</a></li>
+                <li class="max-md:my-5"><a href="vision.html" class="text-gray-500 dark:text-textMuted hover:text-gray-900 dark:hover:text-textMain transition-colors duration-300 py-1 text-lg font-medium">Vision</a></li>
+            </ul>
 
-        <!-- 모바일 햄버거 버튼 -->
-        <button id="hamburger" class="hidden max-md:flex flex-col gap-[5px] cursor-pointer bg-transparent border-none p-1" aria-label="메뉴 열기">
-            <div class="line line1 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
-            <div class="line line2 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
-            <div class="line line3 w-[25px] h-[3px] bg-textMain transition-all duration-300"></div>
-        </button>
+            <!-- 다크/라이트 모드 토글 버튼 -->
+            <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-white/10 hover:bg-gray-300 dark:hover:bg-white/20 transition-colors" aria-label="테마 변경">
+                <svg id="theme-toggle-light-icon" class="hidden w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path></svg>
+                <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            </button>
+
+            <!-- 햄버거 버튼 -->
+            <button id="hamburger" class="hidden max-md:flex flex-col gap-[5px] cursor-pointer bg-transparent border-none p-1" aria-label="메뉴 열기">
+                <div class="line line1 w-[25px] h-[3px] bg-gray-900 dark:bg-textMain transition-all duration-300"></div>
+                <div class="line line2 w-[25px] h-[3px] bg-gray-900 dark:bg-textMain transition-all duration-300"></div>
+                <div class="line line3 w-[25px] h-[3px] bg-gray-900 dark:bg-textMain transition-all duration-300"></div>
+            </button>
+        </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="fade-in h-screen flex flex-col justify-center items-start px-[5%] max-w-[1200px] mx-auto">
-        <h1 class="text-4xl md:text-[3.5rem] font-bold leading-[1.3] mb-5 break-keep">
+        <h1 class="text-4xl md:text-[3.5rem] font-bold leading-[1.3] mb-5 break-keep text-gray-900 dark:text-textMain">
             기술적 타당성으로 단단한 백엔드를 구축하고,<br>AI로 새로운 가치를 더하는<br>
-            <span class="text-white border-b-2 border-white">액티브(Active) 디벨로퍼</span>
+            <span class="text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white">액티브(Active) 디벨로퍼</span>
         </h1>
-        <p class="text-lg md:text-xl text-textMuted mb-10 break-keep">데이터의 흐름을 지휘하는 논리, 지치지 않는 추진력.</p>
+        <p class="text-lg md:text-xl text-gray-600 dark:text-textMuted mb-10 break-keep">데이터의 흐름을 지휘하는 논리, 지치지 않는 추진력.</p>
     </section>
 
     <!-- Intro Section -->
     <section class="fade-in text-center pt-[150px] pb-[100px] px-5 max-w-[1200px] mx-auto">
-        <h2 class="text-3xl md:text-[2.5rem] font-bold mb-8 break-keep">97년생, 에너제틱 백엔드 엔지니어 박현도입니다.</h2>
-        <p class="text-[1.1rem] text-textMuted max-w-[700px] mx-auto mb-5 break-keep">
+        <h2 class="text-3xl md:text-[2.5rem] font-bold mb-8 break-keep text-gray-900 dark:text-textMain">97년생, 에너제틱 백엔드 엔지니어 박현도입니다.</h2>
+        <p class="text-[1.1rem] text-gray-600 dark:text-textMuted max-w-[700px] mx-auto mb-5 break-keep">
             필드를 누비는 스포츠의 역동성을 코드 앞에서의 끈기로 치환합니다.<br>
             Java와 Spring Boot를 주력 무기로, 복잡한 비즈니스 로직을 단단하게 풀어냅니다.
         </p>
-        <p class="text-[1.1rem] text-textMuted max-w-[700px] mx-auto break-keep">
+        <p class="text-[1.1rem] text-gray-600 dark:text-textMuted max-w-[700px] mx-auto break-keep">
             단순히 돌아가는 코드를 넘어, 왜 이 기술을 선택했는지 명확한 근거를 제시할 수 있는 개발자를 지향합니다.
         </p>
     </section>
@@ -103,79 +91,131 @@
     <!-- Tech Teaser (Strength Cards) Section -->
     <section class="fade-in py-[100px] px-5 max-w-[1200px] mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
-            <!-- Card 1 -->
-            <div class="bg-navyLight p-10 rounded-xl transition-transform duration-300 hover:-translate-y-2 hover:bg-[#1f3160] border border-white/5">
-                <h3 class="text-2xl font-bold mb-4 text-white break-keep">집요한 원인 분석과<br>성능 최적화</h3>
-                <p class="text-textMuted text-base break-keep">Karman 프로젝트 V2 최적화 과정에서 단순한 쿼리 튜닝을 넘어섰습니다. 벌크 연산 시 영속성 컨텍스트의 초기화(clearAutomatically) 타이밍과 같은 미세한 원인까지 분석하여 약 78~80%의 실질적인 성능 개선을 이끌어냈습니다.</p>
+            <div class="bg-white dark:bg-navyLight p-10 rounded-xl transition-transform duration-300 hover:-translate-y-2 border border-gray-200 dark:border-white/5 shadow-lg">
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white break-keep">집요한 원인 분석과<br>성능 최적화</h3>
+                <p class="text-gray-600 dark:text-textMuted text-base break-keep">Karman 프로젝트 V2 최적화 과정에서 단순한 쿼리 튜닝을 넘어섰습니다. 벌크 연산 시 영속성 컨텍스트의 초기화(clearAutomatically) 타이밍과 같은 미세한 원인까지 분석하여 약 78~80%의 실질적인 성능 개선을 이끌어냈습니다.</p>
             </div>
-            <!-- Card 2 -->
-            <div class="bg-navyLight p-10 rounded-xl transition-transform duration-300 hover:-translate-y-2 hover:bg-[#1f3160] border border-white/5">
-                <h3 class="text-2xl font-bold mb-4 text-white break-keep">분산 환경에서의<br>데이터 정합성 유지</h3>
-                <p class="text-textMuted text-base break-keep">Radiata 프로젝트를 통해 MSA 기반 아키텍처를 설계했습니다. 복잡하게 분산된 서비스 환경 속에서 Saga 패턴 등을 활용하여 데이터의 일관성과 정합성을 유지하는 방법을 치열하게 고민하고 적용했습니다.</p>
+            <div class="bg-white dark:bg-navyLight p-10 rounded-xl transition-transform duration-300 hover:-translate-y-2 border border-gray-200 dark:border-white/5 shadow-lg">
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white break-keep">분산 환경에서의<br>데이터 정합성 유지</h3>
+                <p class="text-gray-600 dark:text-textMuted text-base break-keep">Radiata 프로젝트를 통해 MSA 기반 아키텍처를 설계했습니다. 복잡하게 분산된 서비스 환경 속에서 Saga 패턴 등을 활용하여 데이터의 일관성과 정합성을 유지하는 방법을 치열하게 고민하고 적용했습니다.</p>
             </div>
-            <!-- Card 3 -->
-            <div class="bg-navyLight p-10 rounded-xl transition-transform duration-300 hover:-translate-y-2 hover:bg-[#1f3160] border border-white/5">
-                <h3 class="text-2xl font-bold mb-4 text-white break-keep">흔들리지 않는 멘탈과<br>문제 해결력</h3>
-                <p class="text-textMuted text-base break-keep">복잡한 2D 배열 시뮬레이션 같은 하드한 알고리즘 문제 앞에서도 포기하지 않습니다. 운동으로 다져진 강인한 멘탈과 긍정적인 에너지는 팀 프로젝트의 예기치 못한 병목 앞에서도 강력한 돌파구가 됩니다.</p>
+            <div class="bg-white dark:bg-navyLight p-10 rounded-xl transition-transform duration-300 hover:-translate-y-2 border border-gray-200 dark:border-white/5 shadow-lg">
+                <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white break-keep">흔들리지 않는 멘탈과<br>문제 해결력</h3>
+                <p class="text-gray-600 dark:text-textMuted text-base break-keep">복잡한 2D 배열 시뮬레이션 같은 하드한 알고리즘 문제 앞에서도 포기하지 않습니다. 운동으로 다져진 강인한 멘탈과 긍정적인 에너지는 팀 프로젝트의 예기치 못한 병목 앞에서도 강력한 돌파구가 됩니다.</p>
             </div>
         </div>
     </section>
 
     <!-- Synergy & CTA Section -->
-    <section class="fade-in text-center py-[150px] px-5 bg-gradient-to-t from-deepNavy via-navyLight to-deepNavy">
-        <h2 class="text-3xl md:text-[2.5rem] font-bold mb-5 break-keep">SSAFY, 우리의 시너지가 시작되는 곳</h2>
-        <p class="text-lg md:text-[1.2rem] text-textMuted mb-10 max-w-[800px] mx-auto break-keep">
+    <section class="fade-in text-center py-[150px] px-5 bg-gradient-to-t from-gray-200 via-gray-100 to-gray-50 dark:from-deepNavy dark:via-navyLight dark:to-deepNavy transition-colors">
+        <h2 class="text-3xl md:text-[2.5rem] font-bold mb-5 break-keep text-gray-900 dark:text-textMain">SSAFY, 우리의 시너지가 시작되는 곳</h2>
+        <p class="text-lg md:text-[1.2rem] text-gray-600 dark:text-textMuted mb-10 max-w-[800px] mx-auto break-keep">
             뛰어난 동료 교육생 여러분과 서로의 개발 노하우를 아낌없이 공유하며 상부상조하고 싶습니다. 우리가 함께 흘리는 땀방울과 코드 리뷰는 가장 확실한 성장의 거름이 될 것입니다.
         </p>
-        <p class="text-lg md:text-[1.2rem] text-textMuted mb-10 max-w-[800px] mx-auto break-keep">
+        <p class="text-lg md:text-[1.2rem] text-gray-600 dark:text-textMuted mb-10 max-w-[800px] mx-auto break-keep">
             이곳에서 다 같이 치열하게 성장하여, 목표하는 엔터프라이즈 기업의 문을 함께 두드립시다!
         </p>
-        <a href="vision.html" class="inline-block bg-textMain text-deepNavy py-4 px-10 text-lg font-bold rounded-full no-underline transition-all duration-300 hover:bg-textMuted hover:scale-105">다 같이 삼성으로 가보자고! 🚀</a>
+        <a href="vision.html" class="inline-block bg-gray-900 text-white dark:bg-textMain dark:text-deepNavy py-4 px-10 text-lg font-bold rounded-full no-underline transition-all duration-300 hover:scale-105 shadow-xl">다 같이 삼성으로 가보자고! 🚀</a>
     </section>
 
-    <!-- Footer -->
-    <footer class="text-center py-10 px-5 border-t border-white/10 text-textMuted text-sm">
-        <p>© 2026 Park Hyun-do. All rights reserved. | Built with Passion & Tailwind CSS.</p>
-    </footer>
-
-    <!-- JavaScript -->
+    <!-- 공통 스크립트 (다크모드/파티클/햄버거) -->
     <script>
-        // 햄버거 메뉴 동작
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('nav-links');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+        const htmlElement = document.documentElement;
 
-        hamburger.addEventListener('click', () => {
-            // max-md:-right-full 클래스를 제거하고 max-md:right-0 클래스 추가
-            if (navLinks.classList.contains('max-md:-right-full')) {
-                navLinks.classList.remove('max-md:-right-full');
-                navLinks.classList.add('max-md:right-0');
+        if (localStorage.getItem('color-theme') === 'light') {
+            htmlElement.classList.remove('dark');
+            darkIcon.classList.remove('hidden');
+        } else {
+            htmlElement.classList.add('dark');
+            lightIcon.classList.remove('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', function() {
+            darkIcon.classList.toggle('hidden');
+            lightIcon.classList.toggle('hidden');
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
             } else {
-                navLinks.classList.remove('max-md:right-0');
-                navLinks.classList.add('max-md:-right-full');
+                htmlElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
             }
-            hamburger.classList.toggle('toggle');
         });
 
-        // 스크롤 페이드인 애니메이션 동작
-        document.addEventListener("DOMContentLoaded", () => {
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.15
-            };
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
-
-            const fadeElements = document.querySelectorAll('.fade-in');
-            fadeElements.forEach(el => observer.observe(el));
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
         });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedY = Math.random() * -0.5 - 0.2;
+                this.speedX = Math.random() * 0.4 - 0.2;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.y < 0) {
+                    this.y = canvas.height;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+            draw() {
+                const isDark = htmlElement.classList.contains('dark');
+                ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.15)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            const numberOfParticles = Math.floor((canvas.width * canvas.height) / 15000);
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles();
+        animateParticles();
+
+        document.getElementById('hamburger').addEventListener('click', function() {
+            const navLinks = document.getElementById('nav-links');
+            navLinks.classList.toggle('max-md:-right-full');
+            navLinks.classList.toggle('max-md:right-0');
+            this.classList.toggle('toggle');
+        });
+
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
     </script>
 </body>
 </html>
